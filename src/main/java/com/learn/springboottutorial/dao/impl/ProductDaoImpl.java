@@ -34,6 +34,7 @@ public class ProductDaoImpl implements ProductDao {
         StringBuilder sqlBuilder = new StringBuilder(baseSql);
         Map<String, Object> params = new HashMap<>();
 
+        // query
         if (productQueryParams.getCategory() != null) {
             sqlBuilder.append(" AND category = :category");
             params.put("category", productQueryParams.getCategory().name());
@@ -44,10 +45,16 @@ public class ProductDaoImpl implements ProductDao {
             params.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
+        // order by
         String orderBy = validateOrderBy(productQueryParams.getOrderBy());
         String sort = validateSort(productQueryParams.getSort());
 
         sqlBuilder.append(" ORDER BY ").append(orderBy).append(" ").append(sort);
+
+        // pagination
+        sqlBuilder.append(" LIMIT :limit OFFSET :offset");
+        params.put("limit", productQueryParams.getLimit());
+        params.put("offset", productQueryParams.getOffset());
 
         return namedParameterJdbcTemplate.query(sqlBuilder.toString(), params, new ProductRowMapper());
     }
