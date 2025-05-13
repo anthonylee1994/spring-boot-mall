@@ -30,7 +30,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Integer countProduct(ProductQueryParams productQueryParams) {
-        String baseSql = "SELECT COUNT(*) FROM mall.product WHERE 1=1";
+        String baseSql = "SELECT COUNT(*) FROM product WHERE 1=1";
 
         StringBuilder sqlBuilder = new StringBuilder(baseSql);
         Map<String, Object> params = new HashMap<>();
@@ -41,7 +41,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> getProducts(ProductQueryParams productQueryParams) {
-        String baseSql = "SELECT * FROM mall.product WHERE 1=1";
+        String baseSql = "SELECT * FROM product WHERE 1=1";
         StringBuilder sqlBuilder = new StringBuilder(baseSql);
         Map<String, Object> params = new HashMap<>();
 
@@ -64,7 +64,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Product getProductById(Integer id) {
-        String sql = "select * from mall.product where product_id = :productId";
+        String sql = "select * from product where product_id = :productId";
 
         Map<String, Object> params = new HashMap<>();
         params.put("productId", id);
@@ -80,7 +80,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Integer createProduct(ProductRequest productRequest) {
-        String sql = "INSERT INTO mall.product (product_name, category, image_url, price, stock, description, created_date, last_modified_date) VALUES (:productName, :category, :imageUrl, :price, :stock, :description, :createdDate, :lastModifiedDate)";
+        String sql = "INSERT INTO product (product_name, category, image_url, price, stock, description, created_date, last_modified_date) VALUES (:productName, :category, :imageUrl, :price, :stock, :description, :createdDate, :lastModifiedDate)";
         Map<String, Object> params = new HashMap<>();
         params.put("productName", productRequest.getProductName());
         params.put("category", productRequest.getCategory().toString());
@@ -102,7 +102,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void updateProduct(Integer productId, ProductRequest productRequest) {
         String sql = """
-                UPDATE mall.product
+                UPDATE product
                 SET product_name       = :productName,
                     category           = :category,
                     image_url          = :imageUrl,
@@ -128,7 +128,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public void deleteProductById(Integer productId) {
-        String sql = "DELETE FROM mall.product WHERE product_id = :productId";
+        String sql = "DELETE FROM product WHERE product_id = :productId";
 
         Map<String, Object> params = new HashMap<>();
         params.put("productId", productId);
