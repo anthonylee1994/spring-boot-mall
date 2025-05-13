@@ -1,6 +1,7 @@
 package com.learn.springboottutorial.controller;
 
 import com.learn.springboottutorial.constant.ProductCategory;
+import com.learn.springboottutorial.dto.ProductQueryParams;
 import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
 import com.learn.springboottutorial.service.ProductService;
@@ -32,7 +33,11 @@ public class ProductController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search
     ) {
-        List<Product> productList = productService.getProducts(category, search);
+        ProductQueryParams productQueryParams = new ProductQueryParams();
+        productQueryParams.setCategory(category);
+        productQueryParams.setSearch(search);
+
+        List<Product> productList = productService.getProducts(productQueryParams);
         return ResponseEntity.ok(productList);
     }
 

@@ -2,6 +2,7 @@ package com.learn.springboottutorial.dao.impl;
 
 import com.learn.springboottutorial.constant.ProductCategory;
 import com.learn.springboottutorial.dao.ProductDao;
+import com.learn.springboottutorial.dto.ProductQueryParams;
 import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
 import com.learn.springboottutorial.rowmapper.ProductRowMapper;
@@ -27,19 +28,19 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts(ProductCategory category, String search) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
         String sql = "select * from mall.product WHERE 1=1";
 
         Map<String, Object> params = new HashMap<>();
 
-        if (category != null) {
+        if (productQueryParams.getCategory() != null) {
             sql += " AND category = :category";
-            params.put("category", category.toString());
+            params.put("category", productQueryParams.getCategory().name());
         }
 
-        if (search != null) {
+        if (productQueryParams.getSearch() != null) {
             sql += " AND product_name LIKE :search";
-            params.put("search", "%" + search + "%");
+            params.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
         return namedParameterJdbcTemplate.query(sql, params, new ProductRowMapper());
