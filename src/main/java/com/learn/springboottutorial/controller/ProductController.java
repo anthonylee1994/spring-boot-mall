@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author anthonylee
  */
@@ -22,6 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     @Autowired
     private ProductService productService;
+
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts() {
+        List<Product> productList = productService.getProducts();
+        return ResponseEntity.ok(productList);
+    }
 
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId) {

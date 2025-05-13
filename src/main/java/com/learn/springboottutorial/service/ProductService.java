@@ -2,12 +2,15 @@ package com.learn.springboottutorial.service;
 
 import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
-import jakarta.validation.Valid;
+
+import java.util.List;
 
 /**
  * @author anthonylee
  */
 public interface ProductService {
+    List<Product> getProducts();
+
     Product getProductById(Integer productId);
 
     Integer createProduct(ProductRequest productRequest);
