@@ -1,11 +1,11 @@
 package com.learn.springboottutorial.dao.impl;
 
-import com.learn.springboottutorial.constant.ProductCategory;
 import com.learn.springboottutorial.dao.ProductDao;
 import com.learn.springboottutorial.dto.ProductQueryParams;
 import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
 import com.learn.springboottutorial.rowmapper.ProductRowMapper;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,21 +30,26 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> getProducts(ProductQueryParams productQueryParams) {
-        String sql = "select * from mall.product WHERE 1=1";
-
+        String baseSql = "SELECT * FROM mall.product WHERE 1=1";
+        StringBuilder sqlBuilder = new StringBuilder(baseSql);
         Map<String, Object> params = new HashMap<>();
 
         if (productQueryParams.getCategory() != null) {
-            sql += " AND category = :category";
+            sqlBuilder.append(" AND category = :category");
             params.put("category", productQueryParams.getCategory().name());
         }
 
         if (productQueryParams.getSearch() != null) {
-            sql += " AND product_name LIKE :search";
+            sqlBuilder.append(" AND product_name LIKE :search");
             params.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
-        return namedParameterJdbcTemplate.query(sql, params, new ProductRowMapper());
+        String orderBy = validateOrderBy(productQueryParams.getOrderBy());
+        String sort = validateSort(productQueryParams.getSort());
+
+        sqlBuilder.append(" ORDER BY ").append(orderBy).append(" ").append(sort);
+
+        return namedParameterJdbcTemplate.query(sqlBuilder.toString(), params, new ProductRowMapper());
     }
 
     @Override
@@ -118,5 +124,20 @@ public class ProductDaoImpl implements ProductDao {
         params.put("productId", productId);
 
         namedParameterJdbcTemplate.update(sql, params);
+    }
+
+    private String validateOrderBy(String orderBy) {
+        List<String> allowedColumns = Arrays.asList("product_id", "product_name", "price", "created_date");
+        if (StringUtils.isEmpty(orderBy) || !allowedColumns.contains(orderBy)) {
+            return "created_date";
+        }
+        return orderBy;
+    }
+
+    private String validateSort(String sort) {
+        if (StringUtils.isEmpty(sort) || (!sort.equalsIgnoreCase("ASC") && !sort.equalsIgnoreCase("DESC"))) {
+            return "ASC";
+        }
+        return sort.toUpperCase();
     }
 }
