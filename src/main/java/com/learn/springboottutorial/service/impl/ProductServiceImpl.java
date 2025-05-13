@@ -1,5 +1,6 @@
 package com.learn.springboottutorial.service.impl;
 
+import com.learn.springboottutorial.constant.ProductCategory;
 import com.learn.springboottutorial.dao.ProductDao;
 import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
@@ -18,8 +19,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts() {
-        return productDao.getProducts();
+    public List<Product> getProducts(ProductCategory productCategory, String search) {
+        return productDao.getProducts(productCategory, search);
     }
 
     @Override
