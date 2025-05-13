@@ -34,16 +34,7 @@ public class ProductDaoImpl implements ProductDao {
 
         StringBuilder sqlBuilder = new StringBuilder(baseSql);
         Map<String, Object> params = new HashMap<>();
-
-        if (productQueryParams.getCategory() != null) {
-            sqlBuilder.append(" AND category = :category");
-            params.put("category", productQueryParams.getCategory().name());
-        }
-
-        if (productQueryParams.getSearch() != null) {
-            sqlBuilder.append(" AND product_name LIKE :search");
-            params.put("search", "%" + productQueryParams.getSearch() + "%");
-        }
+        sqlBuilder = new StringBuilder(addFilteringSql(sqlBuilder, params, productQueryParams));
 
         return namedParameterJdbcTemplate.queryForObject(sqlBuilder.toString(), params, Integer.class);
     }
@@ -55,15 +46,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> params = new HashMap<>();
 
         // query
-        if (productQueryParams.getCategory() != null) {
-            sqlBuilder.append(" AND category = :category");
-            params.put("category", productQueryParams.getCategory().name());
-        }
-
-        if (productQueryParams.getSearch() != null) {
-            sqlBuilder.append(" AND product_name LIKE :search");
-            params.put("search", "%" + productQueryParams.getSearch() + "%");
-        }
+        sqlBuilder = new StringBuilder(addFilteringSql(sqlBuilder, params, productQueryParams));
 
         // order by
         String orderBy = validateOrderBy(productQueryParams.getOrderBy());
@@ -166,5 +149,19 @@ public class ProductDaoImpl implements ProductDao {
             return "ASC";
         }
         return sort.toUpperCase();
+    }
+
+    private String addFilteringSql(StringBuilder sqlBuilder, Map<String, Object> params, ProductQueryParams productQueryParams) {
+        if (productQueryParams.getCategory() != null) {
+            sqlBuilder.append(" AND category = :category");
+            params.put("category", productQueryParams.getCategory().name());
+        }
+
+        if (productQueryParams.getSearch() != null) {
+            sqlBuilder.append(" AND product_name LIKE :search");
+            params.put("search", "%" + productQueryParams.getSearch() + "%");
+        }
+
+        return sqlBuilder.toString();
     }
 }
