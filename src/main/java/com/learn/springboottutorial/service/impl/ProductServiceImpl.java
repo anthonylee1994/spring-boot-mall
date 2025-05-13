@@ -1,6 +1,7 @@
 package com.learn.springboottutorial.service.impl;
 
 import com.learn.springboottutorial.dao.ProductDao;
+import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
 import com.learn.springboottutorial.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,5 +18,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Integer productId) {
         return productDao.getProductById(productId);
+    }
+
+    @Override
+    public Integer createProduct(ProductRequest productRequest) {
+        return productDao.createProduct(productRequest);
     }
 }

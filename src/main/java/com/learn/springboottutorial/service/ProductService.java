@@ -1,5 +1,6 @@
 package com.learn.springboottutorial.service;
 
+import com.learn.springboottutorial.dto.ProductRequest;
 import com.learn.springboottutorial.model.Product;
 
 /**
@@ -7,4 +8,6 @@ import com.learn.springboottutorial.model.Product;
  */
 public interface ProductService {
     Product getProductById(Integer productId);
+
+    Integer createProduct(ProductRequest productRequest);
 }
