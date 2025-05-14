@@ -1,6 +1,7 @@
 package com.learn.springboottutorial.dao.impl;
 
 import com.learn.springboottutorial.dao.OrderDao;
+import com.learn.springboottutorial.dto.OrderQueryParams;
 import com.learn.springboottutorial.model.Order;
 import com.learn.springboottutorial.model.OrderItem;
 import com.learn.springboottutorial.rowmapper.OrderItemRowMapper;
@@ -55,6 +56,28 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        String sql = "select count(*) from `order` where 1=1";
+        Map<String, Object> params = new HashMap<>();
+        sql = addFilteringSql(sql, params, orderQueryParams);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        String sql = "select * from `order` where 1=1";
+        Map<String, Object> params = new HashMap<>();
+        sql = addFilteringSql(sql, params, orderQueryParams);
+        sql += " ORDER BY created_date DESC";
+        sql += " LIMIT :limit OFFSET :offset";
+        params.put("limit", orderQueryParams.getLimit());
+        params.put("offset", orderQueryParams.getOffset());
+
+        return namedParameterJdbcTemplate.query(sql, params, new OrderRowMapper());
+    }
+
+    @Override
     public Integer createOrder(Integer userId, Integer totalAmount) {
         String sql = "INSERT INTO `order` (user_id, total_amount, created_date, last_modified_date) VALUES (:userId, :totalAmount, :createdDate, :lastModifiedDate)";
         Map<String, Object> params = new HashMap<>();
@@ -87,5 +110,14 @@ public class OrderDaoImpl implements OrderDao {
         }
 
         namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
+    }
+
+    private String addFilteringSql(String sql, Map<String, Object> params, OrderQueryParams orderQueryParams) {
+        if (orderQueryParams.getUserId() != null) {
+            sql += " and user_id = :userId";
+            params.put("userId", orderQueryParams.getUserId());
+        }
+
+        return sql;
     }
 }

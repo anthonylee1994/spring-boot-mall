@@ -1,5 +1,6 @@
 package com.learn.springboottutorial.dao;
 
+import com.learn.springboottutorial.dto.OrderQueryParams;
 import com.learn.springboottutorial.model.Order;
 import com.learn.springboottutorial.model.OrderItem;
 
@@ -16,4 +17,8 @@ public interface OrderDao {
     void createOrderItems(Integer orderId, List<OrderItem> orderItemList);
 
     List<OrderItem> getOrderItemsByOrderId(Integer orderId);
+
+    Integer countOrder(OrderQueryParams orderQueryParams);
+
+    List<Order> getOrders(OrderQueryParams orderQueryParams);
 }
