@@ -7,7 +7,9 @@ import com.learn.springboottutorial.model.User;
  * @author anthonylee
  */
 public interface UserDao {
-    Integer createUser(UserRegisterRequest userRegisterRequest);
-
     User getUserById(Integer userId);
+
+    User getUserByEmail(String email);
+
+    Integer createUser(UserRegisterRequest userRegisterRequest);
 }
