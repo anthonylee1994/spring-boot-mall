@@ -1,5 +1,6 @@
 package com.learn.springboottutorial.controller;
 
+import com.learn.springboottutorial.dto.UserLoginRequest;
 import com.learn.springboottutorial.dto.UserRegisterRequest;
 import com.learn.springboottutorial.model.User;
 import com.learn.springboottutorial.service.UserService;
@@ -26,5 +27,12 @@ public class UserController {
         User user = userService.getUserById(userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+        User user = userService.login(userLoginRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

@@ -1,6 +1,7 @@
 package com.learn.springboottutorial.service.impl;
 
 import com.learn.springboottutorial.dao.UserDao;
+import com.learn.springboottutorial.dto.UserLoginRequest;
 import com.learn.springboottutorial.dto.UserRegisterRequest;
 import com.learn.springboottutorial.model.User;
 import com.learn.springboottutorial.service.UserService;
@@ -37,5 +38,22 @@ public class UserServiceImpl implements UserService {
         }
 
         return userDao.createUser(userRegisterRequest);
+    }
+
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+
+        if (user == null) {
+            logger.warn("User not found with email: {}", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if (user.getPassword().equals(userLoginRequest.getPassword())) {
+            return user;
+        } else {
+            logger.warn("Invalid password for user with email: {}", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }
